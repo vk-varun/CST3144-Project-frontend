@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After School Classes</title>
+    <!-- Production Link -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16"></script> -->
+    <!-- Prototyping Link -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <!-- Font Awesome Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style3.css">
+    <script src="classes.js"></script>
+
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1 v-text="siteName"></h1>
+            <button v-on:click="showCheckout">
+                {{ cartItemCount }}
+                <!-- cart Icon -->
+                <span class="fas fa-cart-plus"></span>
+                Checkout
+            </button>
+        </header>
+        <main>
+            <div class="class-list" v-if="showProduct">
+                <!-- <input type="search" name="" id="search-class" placeholder="Search">
+                <h2>Classes</h2> -->
+                <div class="class" v-for="product in classes">
+                    <figure>
+                        <img v-bind:src="product.image">
+                    </figure>
+                    <h2 v-text="product.title"></h2>
+                    <p v-html="product.description"></p>
+                    <p>Price: {{ product.price }}</p>
+                    <!-- <p>Availability: {{ product.availableInventory - cartItemCount }}</p> -->
+                    <p>Availability: {{ product.availableInventory - cartCount(product.id) }}</p>
+                    <!-- instead of v-on, @ symbol can be used -->
+                    <!-- <input type="button" value="add" v-on:click="addToCart">  -->
+                    <button v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to cart</button>
+                    <button disabled="disabled" v-else>Out of Stock</button>
+                    <!-- Method 1 -->
+                    <!-- <span v-if="product.availableInventory - cartItemCount < 5">
+                        Only {{product.availableInventory - cartItemCount}} left!
+                    </span> -->
+
+                    <!-- Method 2 -->
+                    <!-- <span v-if="itemsLeft === 0">
+                        All out!
+                    </span>
+                    <span v-else-if="itemsLeft < 5">
+                        Only {{itemsLeft}} left!
+                    </span>
+                    <span class="buy-now" v-else>
+                        Buy now!
+                    </span> -->
+
+                    <!-- Updating cartItem to cartCount -->
+                    <span v-if="product.availableInventory === cartCount(product.id)">
+                        All out!
+                    </span>
+                    <span v-else-if="product.availableInventory - cartCount(product.id) < 5">
+                        Only {{product.availableInventory - cartCount(product.id)}} left!
+                    </span>
+                    <span class="book-now" v-else>
+                        Book now!
+                    </span>
+    
+                    <div>
+                        <span v-for="n in product.rating">★</span>
+                        <span v-for="n in 5 - product.rating">☆</span>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="checkout-section" v-else>
+                <h2>Checkout</h2>
+                <div class="checkout">
+                    <div class="form">
+                        <p>
+                            <strong>First Name:</strong>
+                            <input v-model.trim="order.firstName">
+                        </p>
+                        <p>
+                            <strong>Last Name:</strong>
+                            <input v-model.trim="order.lastName">
+                        </p>
+                        <p>
+                            <strong>Address:</strong>
+                            <input v-model.trim="order.address">
+                        </p>
+                        <p>
+                            <strong>City:</strong>
+                            <input v-model.trim="order.city">
+                        </p>
+                        <p>
+                            <strong>State:</strong>
+                            <select v-model="order.state">
+                                <option disabled value="">State</option>
+                                <option v-for="(state, key) in states" 
+                                    v-bind:value="state">
+                                    {{ key }}
+                                </option>
+                            </select>
+                        </p>
+                        <p>
+                            <strong>Zip:</strong>
+                            <input v-model.number="order.zip" type="number">
+                        </p>
+                        <!-- Checkbox -->
+                        <p>
+                            <input type="checkbox" id="gift" value="true" 
+                                v-model="order.gift"
+                                v-bind:true-value="order.sendGift"
+                                v-bind:false-value="order.dontSendGift">
+                            <label for="gift">Ship as Gift?</label>
+                        </p>
+                        <!-- Radio button -->
+                        <p class="radio-button">
+                            <input type="radio" id="home" value="Home" v-model="order.method">
+                            <label for="home">Home</label>
+                            <input type="radio" id="business" value="Business" v-model="order.method">
+                            <label for="business">Business</label>
+                        </p>
+    
+                        <button v-on:click="submitForm">Place Order</button>
+                    </div>
+                    
+    
+                    <!-- Displays order information and updates in real-time -->
+                    <div class="order-info">
+                        <h2>Order Information</h2>
+                        <p>First Name: {{ order.firstName }}</p>
+                        <p>Last Name: {{ order.lastName }}</p>
+                        <p>Address: {{ order.address }}</p>
+                        <p>City: {{ order.city }}</p>
+                        <p>State: {{ order.state }}</p>
+                        <p>Zip: {{ order.zip }}</p>
+                        <p>Gift? {{ order.gift }}</p>
+                        <p>Method: {{ order.method }}</p>
+                    </div> 
+                </div>
+                                
+            </div>
+        </main>
+    </div>
+    <script type="text/javascript">
+        let webstore = new Vue({
+            el: "#app", // DOM (Document Object Model) used to mount the application
+            data: {
+                siteName: "After School Classes",
+                classes: classes,
+                cart: [], // an array to store items in shopping cart
+                showProduct: true,
+                order: {
+                    firstName: "",
+                    lastName: "",
+                    address: "",
+                    city: "",
+                    state: "",
+                    zip: "",
+                    gift: false,
+                    method: "Home",
+                    sendGift: "Send as a gift",
+                    dontSendGift: "Do not send as a gift"
+                },
+                states: {
+                    AL: "Alabama",
+                    AZ: "Arizona",
+                    CA: "California",
+                    NV: "Nevada"
+                }
+            },
+            methods: {
+                addToCart: function (product) {
+                    this.cart.push(product.id);
+                    // this.product.availableInventory -= 1;
+                },
+                // Moved from computed
+                canAddToCart: function (product) {
+                    return product.availableInventory > this.cartCount(product.id);
+                    // return this.product.availableInventory > 0;
+                },
+                // New method to count cart items
+                // ->Imp<-
+                cartCount (id) {
+                    let count = 0;
+                    for (let i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i] === id) {
+                            count++;
+                        }
+                    }
+                    return count;
+                },
+                showCheckout() {
+                    this.showProduct = this.showProduct ? false : true;
+                },
+                submitForm() {
+                    alert("Order Submitted!");
+                }
+            },
+            computed: {
+                cartItemCount: function () {
+                    // its value is calculated each time its called
+                    return this.cart.length || "";
+                },
+                
+                itemsLeft() {
+                    return this.product.availableInventory - this.cartItemCount;
+                },
+
+                sortedProducts() {
+                    // comparison function that defines the order
+                    function compare (a,b) {
+                        if (a.price > b.price) {
+                            return -1;
+                        }
+                        if (a.price < b.price) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                    // return 'products' array with the sorted products
+                    return this.products.sort(compare);
+                }
+            }
+
+        });
+    </script>
+</body>
+
+</html>
