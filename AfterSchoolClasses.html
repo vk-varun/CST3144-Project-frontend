@@ -22,7 +22,7 @@
             <h1 v-text="siteName"></h1>
             <!-- Checkout button -->
             <!-- Button disabled if cart empty -->
-            <button v-on:click="showCheckout" :disabled="cartItemCount === 0">
+            <button v-on:click="showCheckout" :disabled="cartItemCount === ''">
                 {{ cartItemCount }}
                 <!-- <span v-if="cartItemCount > 0">{{ cartItemCount }}</span> -->
                 <!-- cart Icon -->
@@ -93,6 +93,20 @@
                 <!-- Cart Items -->
                 <div class="cart-items">
                     <h2>Cart Items</h2>
+
+                    <div class="class-list">
+                        <div class="class" v-for="productId in cartItems" :key="productId">
+                            <figure>
+                                <img v-bind:src="getClassById(productId).image" alt="Class Image">
+                            </figure>
+                            <h2 v-text="getClassById(productId).title"></h2>
+                            <p><strong>Location:</strong> {{ getClassById(productId).location }}</p>
+                            <p><strong>Price:</strong> {{ getClassById(productId).price }}</p>
+                            <p><strong>Quantity:</strong> {{ cartCount(productId) }}</p>
+                            <button @click="removeFromCart(productId)">Remove</button>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Checkout -->
@@ -100,13 +114,17 @@
                     <h2>Checkout</h2>
                     <div class="checkout">
                         <div class="form">
-                            <p>
+                            <!-- <p>
                                 <strong>First Name:</strong>
                                 <input v-model.trim="order.firstName">
                             </p>
                             <p>
                                 <strong>Last Name:</strong>
                                 <input v-model.trim="order.lastName">
+                            </p> -->
+                            <p>
+                                <strong>Name:</strong>
+                                <input v-model.trim="order.name" placeholder="FirstName LastName">
                             </p>
                             <p>
                                 <strong>Address:</strong>
@@ -116,7 +134,7 @@
                                 <strong>City:</strong>
                                 <input v-model.trim="order.city">
                             </p>
-                            <p>
+                            <!-- <p>
                                 <strong>State:</strong>
                                 <select v-model="order.state">
                                     <option disabled value="">State</option>
@@ -125,42 +143,43 @@
                                         {{ key }}
                                     </option>
                                 </select>
-                            </p>
+                            </p> -->
                             <p>
                                 <strong>Phone Number:</strong>
-                                <input v-model.number="order.phoneNumber" type="number">
+                                <input v-model.number="order.phoneNumber" type="number" placeholder="123 4567890">
                             </p>
                             <!-- Checkbox -->
-                            <p>
+                            <!-- <p>
                                 <input type="checkbox" id="gift" value="true" 
                                     v-model="order.gift"
                                     v-bind:true-value="order.sendGift"
                                     v-bind:false-value="order.dontSendGift">
                                 <label for="gift">Ship as Gift?</label>
-                            </p>
+                            </p> -->
                             <!-- Radio button -->
-                            <p class="radio-button">
+                            <!-- <p class="radio-button">
                                 <input type="radio" id="home" value="Home" v-model="order.method">
                                 <label for="home">Home</label>
                                 <input type="radio" id="business" value="Business" v-model="order.method">
                                 <label for="business">Business</label>
-                            </p>
+                            </p> -->
         
-                            <button v-on:click="submitForm">Place Order</button>
+                            <button v-on:click="submitForm" :disabled="!formValid">Place Order</button>
                         </div>
                         
         
                         <!-- Displays order information and updates in real-time -->
                         <div class="order-info">
                             <h2>Order Information</h2>
-                            <p>First Name: {{ order.firstName }}</p>
-                            <p>Last Name: {{ order.lastName }}</p>
+                            <!-- <p>First Name: {{ order.firstName }}</p>
+                            <p>Last Name: {{ order.lastName }}</p> -->
+                            <p>Name: {{ order.name }}</p>
                             <p>Address: {{ order.address }}</p>
                             <p>City: {{ order.city }}</p>
-                            <p>State: {{ order.state }}</p>
+                            <!-- <p>State: {{ order.state }}</p> -->
                             <p>Phone Number: {{ order.phoneNumber }}</p>
-                            <p>Gift? {{ order.gift }}</p>
-                            <p>Method: {{ order.method }}</p>
+                            <!-- <p>Gift? {{ order.gift }}</p>
+                            <p>Method: {{ order.method }}</p> -->
                         </div> 
                     </div>
                 </div>
@@ -177,23 +196,24 @@
                 cart: [], // an array to store items in shopping cart
                 showProduct: true,
                 order: {
-                    firstName: "",
-                    lastName: "",
+                    // firstName: "",
+                    // lastName: "",
+                    name: "",
                     address: "",
                     city: "",
-                    state: "",
+                    // state: "",
                     phoneNumber: "",
-                    gift: false,
-                    method: "Home",
-                    sendGift: "Send as a gift",
-                    dontSendGift: "Do not send as a gift"
+                    // gift: false,
+                    // method: "Home",
+                    // sendGift: "Send as a gift",
+                    // dontSendGift: "Do not send as a gift"
                 },
-                states: {
-                    AL: "Alabama",
-                    AZ: "Arizona",
-                    CA: "California",
-                    NV: "Nevada"
-                },
+                // states: {
+                //     AL: "Alabama",
+                //     AZ: "Arizona",
+                //     CA: "California",
+                //     NV: "Nevada"
+                // },
                 sortField: "title",
                 sortOrder: "asc",
                 searchTerm: ""
@@ -223,17 +243,54 @@
                     this.showProduct = this.showProduct ? false : true;
                 },
                 submitForm() {
+                    // // TODO: check validity of name and phone number
+                    // // check done using regular expression
+
+                    // let nameTest = /^[a-zA-Z ]{2,30}$/;
+                    // let phoneTest = /^\d{10}$/;
+
+                    // if (!nameTest.test(this.order.name)) {
+                    //     alert("Please enter a valid name. Letters only must be 2 to 30 characters long");
+                    //     return;
+                    // }
+                    // if (!phoneTest.test(this.order.phoneNumber)) {
+                    //     alert("Phone number must be 10 digits");
+                    //     return;
+                    // }
+
                     alert("Order Submitted!");
+                },
+                getClassById (id) {
+                    return this.classes.find(product => product.id === id);
+                },
+                removeFromCart: function (productId) {
+                    // TODO: remove class from cart
+                    // find the position where the class is stored 
+                    let index = this.cart.indexOf(productId);
+
+                    // remove the class from the cart
+                    this.cart.splice(index, 1);
+
+                    // return to classes page if the cart is empty
+                    if (this.cartItemCount === "") {
+                        this.showProduct = true;
+                    }
                 }
             },
             computed: {
                 cartItemCount: function () {
                     // its value is calculated each time its called
-                    return this.cart.length || 0;
+                    return this.cart.length || "";
                 },
                 
                 itemsLeft() {
                     return this.product.availableInventory - this.cartItemCount;
+                },
+                
+                cartItems() {
+                    // TODO: show classes added to cart
+                    // array without duplicate classes 
+                    return [...new Set(this.cart)];
                 },
 
                 sortedClasses() {
@@ -248,7 +305,7 @@
                     });
 
                     // Sort Filter Functionality
-                    // Comparison function that defines the order
+                    // compare function that defines the order
                     function compare(a, b) {
                         let modifier = this.sortOrder === "asc" ? 1 : -1;
 
@@ -268,6 +325,19 @@
                     return filteredClasses.sort(compare.bind(this));
                     // return filteredClasses.slice().sort(compare.bind(this));
                     
+                },
+
+                formValid() {
+                    // TODO: check validity of name and phone number
+                    // check done using regular expression
+
+                    let nameTest = /^[a-zA-Z ]{2,30}$/;
+                    let phoneTest = /^\d{10}$/;
+
+                    return nameTest.test(this.order.name) && 
+                        phoneTest.test(this.order.phoneNumber) &&
+                        this.order.name &&
+                        this.order.phoneNumber;
 
                 }
             }
