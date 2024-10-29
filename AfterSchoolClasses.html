@@ -20,8 +20,11 @@
     <div id="app">
         <header>
             <h1 v-text="siteName"></h1>
-            <button v-on:click="showCheckout">
+            <!-- Checkout button -->
+            <!-- Button disabled if cart empty -->
+            <button v-on:click="showCheckout" :disabled="cartItemCount === 0">
                 {{ cartItemCount }}
+                <!-- <span v-if="cartItemCount > 0">{{ cartItemCount }}</span> -->
                 <!-- cart Icon -->
                 <span class="fas fa-cart-plus"></span>
                 Checkout
@@ -191,7 +194,7 @@
                     CA: "California",
                     NV: "Nevada"
                 },
-                sortField: "price",
+                sortField: "title",
                 sortOrder: "asc",
                 searchTerm: ""
             },
@@ -226,7 +229,7 @@
             computed: {
                 cartItemCount: function () {
                     // its value is calculated each time its called
-                    return this.cart.length || "";
+                    return this.cart.length || 0;
                 },
                 
                 itemsLeft() {
@@ -234,75 +237,17 @@
                 },
 
                 sortedClasses() {
-                    // sorting v1
-                    // // comparison function that defines the order
-                    // function compare (a,b) {
-                    //     if (sortField === "price" && sortOrder === "asc") {
-                    //         if (a.price > b.price) {
-                    //             return 1;
-                    //         }
-                    //         if (a.price < b.price) {
-                    //             return -1;
-                    //         }
-                    //         return 0;
-
-                    //     }
-                    //     if (sortField === "price" && sortOrder === "desc") {
-                    //         if (a.price > b.price) {
-                    //             return -1;
-                    //         }
-                    //         if (a.price < b.price) {
-                    //             return 1;
-                    //         }
-                    //         return 0;
-                    //     }
-                    //     // if (a.price > b.price) {
-                    //     //     return -1;
-                    //     // }
-                    //     // if (a.price < b.price) {
-                    //     //     return 1;
-                    //     // }
-                    //     // return 0;
-                    // }
-                    // // return 'products' array with the sorted products
-                    // return this.classes.sort(compare);
                     
-                    // return this.classes.slice().sort( (a, b) => {
-                    //     let modifier = 1;
-                    //     if (this.sortOrder === "desc") modifier = -1;
-                    //     if (a[this.sortField] < b[this.sortField]) return -1 * modifier;
-                    //     if (a[this.sortField] > b[this.sortField]) return 1 * modifier;
-                    //     return 0;
-
-                    // });
-
-                    
-                    // return this.classes.slice().sort((a, b) => {
-                    //     let modifier = this.sortOrder === "asc" ? 1 : -1;
-            
-                    //     if (this.sortField === "title") {
-                    //         return modifier * a.title.localeCompare(b.title);
-                    //     } 
-                    //     else if (this.sortField === "location") {
-                    //         return modifier * a.location.localeCompare(b.location);
-                    //     } 
-                    //     else if (this.sortField === "price") {
-                    //         return modifier * (a.price - b.price);
-                    //     } 
-                    //     else if (this.sortField === "availability") {
-                    //         return modifier * ((a.availableInventory - this.cartCount(a.id)) - (b.availableInventory - this.cartCount(b.id)));
-                    //     } 
-                    //     else {
-                    //         return 0; // Default case, should not be hit if inputs are controlled
-                    //     }
-                    // });
-
-                    // Search filter
+                    // Search filter Functionality
+                    // TODO: add search with price & availability 
                     const filteredClasses = this.classes.filter(product => {
                         return product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                            product.location.toLowerCase().includes(this.searchTerm.toLowerCase());
+                            product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                            product.price.toString().includes(this.searchTerm.toLowerCase()) ||
+                            (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase());
                     });
 
+                    // Sort Filter Functionality
                     // Comparison function that defines the order
                     function compare(a, b) {
                         let modifier = this.sortOrder === "asc" ? 1 : -1;
@@ -316,11 +261,13 @@
                         } else if (this.sortField === "availability") {
                             return ((a.availableInventory - this.cartCount(a.id)) - (b.availableInventory - this.cartCount(b.id))) * modifier;
                         }
-                        return 0; // Default case
+                        return 0;
                     }
 
                     // Return 'filteredClasses' array with the sorted products
-                    return filteredClasses.slice().sort(compare.bind(this));
+                    return filteredClasses.sort(compare.bind(this));
+                    // return filteredClasses.slice().sort(compare.bind(this));
+                    
 
                 }
             }
