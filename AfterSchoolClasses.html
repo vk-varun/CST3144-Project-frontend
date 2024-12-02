@@ -36,16 +36,16 @@
                 <h2>Classes</h2>
 
                 <!-- Sort Functionality  -->
-                <div class="sort">
+                <div class="sort-section">
                     <h3>Sort by</h3>
-                    <div>
+                    <div class="sort">
                         <label><input type="radio" v-model="sortField" value="title"> Subject</label>
                         <label><input type="radio" v-model="sortField" value="location"> Location</label>
                         <label><input type="radio" v-model="sortField" value="price"> Price</label>
                         <label><input type="radio" v-model="sortField" value="availability"> Availability</label>
                     </div>
                     <h3>Order</h3>
-                    <div>
+                    <div class="order">
                         <label><input type="radio" v-model="sortOrder" value="asc"> Ascending</label>
                         <label><input type="radio" v-model="sortOrder" value="desc"> Descending</label>
                     </div>
@@ -128,11 +128,11 @@
                             </p>
                             <p>
                                 <strong>Address:</strong>
-                                <input v-model.trim="order.address">
+                                <input v-model.trim="order.address" placeholder="Street address">
                             </p>
                             <p>
                                 <strong>City:</strong>
-                                <input v-model.trim="order.city">
+                                <input v-model.trim="order.city" placeholder="City Name">
                             </p>
                             <!-- <p>
                                 <strong>State:</strong>
@@ -146,7 +146,7 @@
                             </p> -->
                             <p>
                                 <strong>Phone Number:</strong>
-                                <input v-model.number="order.phoneNumber" type="number" placeholder="123 4567890">
+                                <input v-model.number="order.phoneNumber" type="number" placeholder="123 456 7890">
                             </p>
                             <!-- Checkbox -->
                             <!-- <p>
@@ -256,7 +256,7 @@
                     // if (!phoneTest.test(this.order.phoneNumber)) {
                     //     alert("Phone number must be 10 digits");
                     //     return;
-                    // }
+                    // } 
 
                     alert("Order Submitted!");
                 },
@@ -275,6 +275,22 @@
                     if (this.cartItemCount === "") {
                         this.showProduct = true;
                     }
+                },
+                searchClasses () {
+                    // Search filter Functionality
+                    // filter cart based on searchTerm
+                    let searchResults = [];
+                    for (let product of this.classes) {
+                        if (
+                            product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                            product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                            product.price.toString().includes(this.searchTerm.toLowerCase()) ||
+                            (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase())
+                        ) {
+                            searchResults.push(product);
+                        }
+                    }
+                    return searchResults;
                 }
             },
             computed: {
@@ -322,7 +338,9 @@
                     }
 
                     // Return 'filteredClasses' array with the sorted products
-                    return filteredClasses.sort(compare.bind(this));
+                    // return filteredClasses.sort(compare.bind(this));
+                    // let searchClasses = this.searchClasses()
+                    return this.searchClasses().sort(compare.bind(this));
                     // return filteredClasses.slice().sort(compare.bind(this));
                     
                 },
