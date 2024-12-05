@@ -223,6 +223,26 @@
                 searchTerm: "",
                 searchResults: []
             },
+            created: function () {
+                console.log('Requesting data from server ...')
+                
+                // fetch data from server
+                fetch('http://localhost:3000/collection/Classes', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(responseJSON => {
+                        // save the returned JSON object to 'classes'
+                        this.classes = responseJSON;
+                        console.log(responseJSON);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
             methods: {
                 addToCart: function (product) {
                     this.cart.push(product.id);
