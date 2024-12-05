@@ -195,7 +195,8 @@
             el: "#app", // DOM (Document Object Model) used to mount the application
             data: {
                 siteName: "After School Classes",
-                classes: classes,
+                // classes: classes,
+                classes: [],
                 cart: [], // an array to store items in shopping cart
                 showProduct: true,
                 order: {
@@ -219,7 +220,8 @@
                 // },
                 sortField: "title",
                 sortOrder: "asc",
-                searchTerm: ""
+                searchTerm: "",
+                searchResults: []
             },
             methods: {
                 addToCart: function (product) {
