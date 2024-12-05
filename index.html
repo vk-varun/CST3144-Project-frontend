@@ -35,56 +35,59 @@
                 <input type="search" name="" v-model="searchTerm" id="search-class" placeholder="Search">
                 <h2>Classes</h2>
 
-                <!-- Sort Functionality  -->
-                <div class="sort-section">
-                    <h3>Sort by</h3>
-                    <div class="sort">
-                        <label><input type="radio" v-model="sortField" value="title"> Subject</label>
-                        <label><input type="radio" v-model="sortField" value="location"> Location</label>
-                        <label><input type="radio" v-model="sortField" value="price"> Price</label>
-                        <label><input type="radio" v-model="sortField" value="availability"> Availability</label>
+                <div class="classes-section">
+                    <!-- Sort Functionality  -->
+                    <div class="sort-section">
+                        <h3>Sort by</h3>
+                        <div class="sort">
+                            <label><input type="radio" v-model="sortField" value="title"> Subject</label>
+                            <label><input type="radio" v-model="sortField" value="location"> Location</label>
+                            <label><input type="radio" v-model="sortField" value="price"> Price</label>
+                            <label><input type="radio" v-model="sortField" value="availability"> Availability</label>
+                        </div>
+                        <h3>Order</h3>
+                        <div class="order">
+                            <label><input type="radio" v-model="sortOrder" value="asc"> Ascending</label>
+                            <label><input type="radio" v-model="sortOrder" value="desc"> Descending</label>
+                        </div>
                     </div>
-                    <h3>Order</h3>
-                    <div class="order">
-                        <label><input type="radio" v-model="sortOrder" value="asc"> Ascending</label>
-                        <label><input type="radio" v-model="sortOrder" value="desc"> Descending</label>
-                    </div>
-                </div>
 
-                <div class="class-list">
-                    <!-- <div class="class" v-for="product in classes"> -->
-                    <div class="class" v-for="product in sortedClasses">    
-                        <figure>
-                            <img v-bind:src="product.image">
-                        </figure>
-                        <h2 v-text="product.title"></h2>
-                        <p v-html="product.description"></p>
-                        <p><strong>Location:</strong> {{ product.location }}</p>
-                        <p><strong>Price:</strong> {{ product.price }}</p>
-                        <!-- <p>Availability: {{ product.availableInventory - cartItemCount }}</p> -->
-                        <p><strong>Availability:</strong> {{ product.availableInventory - cartCount(product.id) }}</p>
-                        <!-- instead of v-on, @ symbol can be used -->
-                        <!-- <input type="button" value="add" v-on:click="addToCart">  -->
-                        <button v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to cart</button>
-                        <button disabled="disabled" v-else>Out of Stock</button>
-    
-                        <!-- Updating cartItem to cartCount -->
-                        <span v-if="product.availableInventory === cartCount(product.id)">
-                            All out!
-                        </span>
-                        <span v-else-if="product.availableInventory - cartCount(product.id) < 5">
-                            Only {{product.availableInventory - cartCount(product.id)}} left!
-                        </span>
-                        <span class="book-now" v-else>
-                            Book now!
-                        </span>
+                    <div class="class-list">
+                        <!-- <div class="class" v-for="product in classes"> -->
+                        <div class="class" v-for="product in sortedClasses">    
+                            <figure>
+                                <img v-bind:src="product.image">
+                            </figure>
+                            <h2 v-text="product.title"></h2>
+                            <p v-html="product.description"></p>
+                            <p><strong>Location:</strong> {{ product.location }}</p>
+                            <p><strong>Price:</strong> {{ product.price }}</p>
+                            <!-- <p>Availability: {{ product.availableInventory - cartItemCount }}</p> -->
+                            <p><strong>Availability:</strong> {{ product.availableInventory - cartCount(product.id) }}</p>
+                            <!-- instead of v-on, @ symbol can be used -->
+                            <!-- <input type="button" value="add" v-on:click="addToCart">  -->
+                            <button v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to cart</button>
+                            <button disabled="disabled" v-else>Out of Stock</button>
         
-                        <div>
-                            <span v-for="n in product.rating">★</span>
-                            <span v-for="n in 5 - product.rating">☆</span>
+                            <!-- Updating cartItem to cartCount -->
+                            <span v-if="product.availableInventory === cartCount(product.id)">
+                                All out!
+                            </span>
+                            <span v-else-if="product.availableInventory - cartCount(product.id) < 5">
+                                Only {{product.availableInventory - cartCount(product.id)}} left!
+                            </span>
+                            <span class="book-now" v-else>
+                                Book now!
+                            </span>
+            
+                            <div>
+                                <span v-for="n in product.rating">★</span>
+                                <span v-for="n in 5 - product.rating">☆</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
                 
                 
             </div>
