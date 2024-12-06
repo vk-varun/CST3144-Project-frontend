@@ -57,7 +57,7 @@
                         <!-- <div class="class" v-for="product in classes"> -->
                         <div class="class" v-for="product in sortedClasses">    
                             <figure>
-                                <img v-bind:src=" 'http://localhost:3000/static/' + product.image">
+                                <img v-bind:src=" 'https://cst3144-project-backend.onrender.com/static/' + product.image">
                             </figure>
                             <h2 v-text="product.title"></h2>
                             <p v-html="product.description"></p>
@@ -101,7 +101,7 @@
                     <div class="class-list">
                         <div class="class" v-for="productId in cartItems" :key="productId">
                             <figure>
-                                <img v-bind:src=" 'http://localhost:3000/static/' + getClassById(productId).image">
+                                <img v-bind:src=" 'https://cst3144-project-backend.onrender.com/static/' + getClassById(productId).image">
                             </figure>
                             <h2 v-text="getClassById(productId).title"></h2>
                             <p><strong>Location:</strong> {{ getClassById(productId).location }}</p>
@@ -228,7 +228,7 @@
                 console.log('Requesting data from server ...')
                 
                 // fetch data from server
-                fetch('http://localhost:3000/collection/Classes', {
+                fetch('https://cst3144-project-backend.onrender.com/collection/Classes', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -302,7 +302,7 @@
                     };
 
                     // send order details to server
-                    fetch('http://localhost:3000/collection/Orders', {
+                    fetch('https://cst3144-project-backend.onrender.com/collection/Orders', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json', // set the data type as JSON
@@ -333,7 +333,7 @@
                     });
 
                     // update the classes in the server
-                    fetch('http://localhost:3000/collection/Classes', {
+                    fetch('https://cst3144-project-backend.onrender.com/collection/Classes', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -382,7 +382,7 @@
                     
                     // Send searchTerm to server
                     // fetch search results from server
-                    fetch(`http://localhost:3000/collection/Classes/search`, {
+                    fetch('https://cst3144-project-backend.onrender.com/collection/Classes/search', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
