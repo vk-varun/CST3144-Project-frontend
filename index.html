@@ -57,7 +57,7 @@
                         <!-- <div class="class" v-for="product in classes"> -->
                         <div class="class" v-for="product in sortedClasses">    
                             <figure>
-                                <img v-bind:src="product.image">
+                                <img v-bind:src=" 'http://localhost:3000/static/' + product.image">
                             </figure>
                             <h2 v-text="product.title"></h2>
                             <p v-html="product.description"></p>
@@ -101,7 +101,7 @@
                     <div class="class-list">
                         <div class="class" v-for="productId in cartItems" :key="productId">
                             <figure>
-                                <img v-bind:src="getClassById(productId).image" alt="Class Image">
+                                <img v-bind:src=" 'http://localhost:3000/static/' + getClassById(productId).image">
                             </figure>
                             <h2 v-text="getClassById(productId).title"></h2>
                             <p><strong>Location:</strong> {{ getClassById(productId).location }}</p>
