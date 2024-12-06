@@ -32,7 +32,8 @@
         </header>
         <main>
             <div class="" v-if="showProduct">
-                <input type="search" name="" v-model="searchTerm" id="search-class" placeholder="Search">
+                <!-- <input type="search" name="" v-model="searchTerm" id="search-class" placeholder="Search"> -->
+                <input type="search" name="" v-model="searchTerm" id="search-class" placeholder="Search" @input="searchClasses">
                 <h2>Classes</h2>
 
                 <div class="classes-section">
@@ -419,12 +420,12 @@
                     
                     // Search filter Functionality
                     // TODO: add search with price & availability 
-                    const filteredClasses = this.classes.filter(product => {
-                        return product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                            product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                            product.price.toString().includes(this.searchTerm.toLowerCase()) ||
-                            (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase());
-                    });
+                    // const filteredClasses = this.classes.filter(product => {
+                    //     return product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                    //         product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                    //         product.price.toString().includes(this.searchTerm.toLowerCase()) ||
+                    //         (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase());
+                    // });
 
                     // Sort Filter Functionality
                     // compare function that defines the order
@@ -446,8 +447,16 @@
                     // Return 'filteredClasses' array with the sorted products
                     // return filteredClasses.sort(compare.bind(this));
                     // let searchClasses = this.searchClasses()
-                    return this.searchClasses().sort(compare.bind(this));
+                    // return this.searchClasses().sort(compare.bind(this));
                     // return filteredClasses.slice().sort(compare.bind(this));
+
+                    // if search term is present, return sorted search results
+                    if (this.searchTerm) {
+                        return this.searchResults.sort(compare.bind(this));
+                    }
+
+                    // return sorted classes
+                    return this.classes.sort(compare.bind(this));
                     
                 },
 
