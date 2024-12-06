@@ -323,6 +323,29 @@
                         .catch((error) => {
                             console.log(error);
                         });
+
+                    // update availability of classes
+                    this.classes.forEach(product => {
+                        if (this.cart.includes(product.id)) {
+                            product.availableInventory -= this.cartCount(product.id);
+                        }
+                    });
+
+                    // update the classes in the server
+                    fetch('http://localhost:3000/collection/Classes', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.classes),
+                    })
+                        .then(response => response.json())
+                        .then(responseJSON => {
+                            console.log(responseJSON);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 },
                 getClassById (id) {
                     return this.classes.find(product => product.id === id);
