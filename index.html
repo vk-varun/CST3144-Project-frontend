@@ -366,18 +366,37 @@
                 searchClasses () {
                     // Search filter Functionality
                     // filter cart based on searchTerm
-                    let searchResults = [];
-                    for (let product of this.classes) {
-                        if (
-                            product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                            product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                            product.price.toString().includes(this.searchTerm.toLowerCase()) ||
-                            (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase())
-                        ) {
-                            searchResults.push(product);
-                        }
-                    }
-                    return searchResults;
+                    // let searchResults = [];
+                    // for (let product of this.classes) {
+                    //     if (
+                    //         product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                    //         product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+                    //         product.price.toString().includes(this.searchTerm.toLowerCase()) ||
+                    //         (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase())
+                    //     ) {
+                    //         searchResults.push(product);
+                    //     }
+                    // }
+                    // return searchResults;
+                    
+                    // Send searchTerm to server
+                    // fetch search results from server
+                    fetch(`http://localhost:3000/collection/Classes/search`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ search: this.searchTerm }), // Send searchTerm to server
+                    })
+                    .then(response => response.json())
+                    .then(responseJSON => {
+                        // Update the searchResults with the response from the server
+                        this.searchResults = responseJSON;
+                        console.log(responseJSON);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
                 }
             },
             computed: {
