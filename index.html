@@ -283,7 +283,46 @@
                     //     return;
                     // } 
 
-                    alert("Order Submitted!");
+                    // alert("Order Submitted!");
+
+                    // object to store order details and cart items
+                    let orderDetails = {
+                        name: this.order.name,
+                        phoneNumber: this.order.phoneNumber,
+                        cart: this.cartItems.map(productId => {
+                            let product = this.getClassById(productId);
+                            return {
+                                id: productId,
+                                title: product.title,
+                                price: product.price,
+                                quantity: this.cartCount(productId)
+                            };
+                        })
+                    };
+
+                    // send order details to server
+                    fetch('http://localhost:3000/collection/Orders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json', // set the data type as JSON
+                        },
+                        body: JSON.stringify(orderDetails),   // stringify the JSON object
+                    })
+                        .then(response => response.json())
+                        .then(responseJSON => {
+                            alert("Order Submitted!");
+                            console.log(responseJSON);
+                            // clear the cart and order information
+                            this.cart = [];
+                            this.order = {
+                                name: "",
+                                phoneNumber: ""
+                            };
+                            this.showProduct = true;
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
                 },
                 getClassById (id) {
                     return this.classes.find(product => product.id === id);
