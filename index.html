@@ -12,7 +12,6 @@
     <!-- Font Awesome Link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="classes.js"></script>
 
 </head>
 
@@ -24,7 +23,6 @@
             <!-- Button disabled if cart empty -->
             <button v-on:click="showCheckout" :disabled="cartItemCount === ''">
                 {{ cartItemCount }}
-                <!-- <span v-if="cartItemCount > 0">{{ cartItemCount }}</span> -->
                 <!-- cart Icon -->
                 <span class="fas fa-cart-plus"></span>
                 Checkout
@@ -32,7 +30,7 @@
         </header>
         <main>
             <div class="" v-if="showProduct">
-                <!-- <input type="search" name="" v-model="searchTerm" id="search-class" placeholder="Search"> -->
+                <!-- Search bar -->
                 <input type="search" name="" v-model="searchTerm" id="search-class" placeholder="Search" @input="searchClasses">
                 <h2>Classes</h2>
 
@@ -54,7 +52,7 @@
                     </div>
 
                     <div class="class-list">
-                        <!-- <div class="class" v-for="product in classes"> -->
+                        <!-- Class List -->
                         <div class="class" v-for="product in sortedClasses">    
                             <figure>
                                 <img v-bind:src=" 'https://cst3144-project-backend.onrender.com/static/' + product.image">
@@ -63,14 +61,12 @@
                             <p v-html="product.description"></p>
                             <p><strong>Location:</strong> {{ product.location }}</p>
                             <p><strong>Price:</strong> {{ product.price }}</p>
-                            <!-- <p>Availability: {{ product.availableInventory - cartItemCount }}</p> -->
                             <p><strong>Availability:</strong> {{ product.availableInventory - cartCount(product.id) }}</p>
                             <!-- instead of v-on, @ symbol can be used -->
-                            <!-- <input type="button" value="add" v-on:click="addToCart">  -->
                             <button v-on:click="addToCart(product)" v-if="canAddToCart(product)">Add to cart</button>
                             <button disabled="disabled" v-else>Out of Stock</button>
         
-                            <!-- Updating cartItem to cartCount -->
+                            <!-- Availability message -->
                             <span v-if="product.availableInventory === cartCount(product.id)">
                                 All out!
                             </span>
@@ -118,56 +114,15 @@
                     <h2>Checkout</h2>
                     <div class="checkout">
                         <div class="form">
-                            <!-- <p>
-                                <strong>First Name:</strong>
-                                <input v-model.trim="order.firstName">
-                            </p>
-                            <p>
-                                <strong>Last Name:</strong>
-                                <input v-model.trim="order.lastName">
-                            </p> -->
                             <p>
                                 <strong>Name:</strong>
                                 <input v-model.trim="order.name" placeholder="Name">
                             </p>
-                            <!-- <p>
-                                <strong>Address:</strong>
-                                <input v-model.trim="order.address" placeholder="Street address">
-                            </p>
-                            <p>
-                                <strong>City:</strong>
-                                <input v-model.trim="order.city" placeholder="City Name">
-                            </p> -->
-                            <!-- <p>
-                                <strong>State:</strong>
-                                <select v-model="order.state">
-                                    <option disabled value="">State</option>
-                                    <option v-for="(state, key) in states" 
-                                        v-bind:value="state">
-                                        {{ key }}
-                                    </option>
-                                </select>
-                            </p> -->
                             <p>
                                 <strong>Phone Number:</strong>
                                 <input v-model.number="order.phoneNumber" type="number" placeholder="123 456 7890">
                             </p>
-                            <!-- Checkbox -->
-                            <!-- <p>
-                                <input type="checkbox" id="gift" value="true" 
-                                    v-model="order.gift"
-                                    v-bind:true-value="order.sendGift"
-                                    v-bind:false-value="order.dontSendGift">
-                                <label for="gift">Ship as Gift?</label>
-                            </p> -->
-                            <!-- Radio button -->
-                            <!-- <p class="radio-button">
-                                <input type="radio" id="home" value="Home" v-model="order.method">
-                                <label for="home">Home</label>
-                                <input type="radio" id="business" value="Business" v-model="order.method">
-                                <label for="business">Business</label>
-                            </p> -->
-        
+
                             <button v-on:click="submitForm" :disabled="!formValid">Place Order</button>
                         </div>
                         
@@ -175,15 +130,8 @@
                         <!-- Displays order information and updates in real-time -->
                         <div class="order-info">
                             <h2>Order Information</h2>
-                            <!-- <p>First Name: {{ order.firstName }}</p>
-                            <p>Last Name: {{ order.lastName }}</p> -->
                             <p>Name: {{ order.name }}</p>
-                            <!-- <p>Address: {{ order.address }}</p>
-                            <p>City: {{ order.city }}</p> -->
-                            <!-- <p>State: {{ order.state }}</p> -->
                             <p>Phone Number: {{ order.phoneNumber }}</p>
-                            <!-- <p>Gift? {{ order.gift }}</p>
-                            <p>Method: {{ order.method }}</p> -->
                         </div> 
                     </div>
                 </div>
@@ -196,34 +144,19 @@
             el: "#app", // DOM (Document Object Model) used to mount the application
             data: {
                 siteName: "After School Classes",
-                // classes: classes,
                 classes: [],
                 cart: [], // an array to store items in shopping cart
                 showProduct: true,
                 order: {
-                    // firstName: "",
-                    // lastName: "",
                     name: "",
-                    // address: "",
-                    // city: "",
-                    // state: "",
                     phoneNumber: "",
-                    // gift: false,
-                    // method: "Home",
-                    // sendGift: "Send as a gift",
-                    // dontSendGift: "Do not send as a gift"
                 },
-                // states: {
-                //     AL: "Alabama",
-                //     AZ: "Arizona",
-                //     CA: "California",
-                //     NV: "Nevada"
-                // },
                 sortField: "title",
                 sortOrder: "asc",
                 searchTerm: "",
                 searchResults: []
             },
+
             created: function () {
                 console.log('Requesting data from server ...')
                 
@@ -244,16 +177,17 @@
                         console.log(error);
                     });
             },
+
             methods: {
                 addToCart: function (product) {
                     this.cart.push(product.id);
-                    // this.product.availableInventory -= 1;
                 },
+                
                 // Moved from computed
                 canAddToCart: function (product) {
                     return product.availableInventory > this.cartCount(product.id);
-                    // return this.product.availableInventory > 0;
                 },
+                
                 // New method to count cart items
                 // ->Imp<-
                 cartCount (id) {
@@ -265,27 +199,12 @@
                     }
                     return count;
                 },
+                
                 showCheckout() {
                     this.showProduct = this.showProduct ? false : true;
                 },
+                
                 submitForm() {
-                    // // TODO: check validity of name and phone number
-                    // // check done using regular expression
-
-                    // let nameTest = /^[a-zA-Z ]{2,30}$/;
-                    // let phoneTest = /^\d{10}$/;
-
-                    // if (!nameTest.test(this.order.name)) {
-                    //     alert("Please enter a valid name. Letters only must be 2 to 30 characters long");
-                    //     return;
-                    // }
-                    // if (!phoneTest.test(this.order.phoneNumber)) {
-                    //     alert("Phone number must be 10 digits");
-                    //     return;
-                    // } 
-
-                    // alert("Order Submitted!");
-
                     // object to store order details and cart items
                     let orderDetails = {
                         name: this.order.name,
@@ -348,11 +267,13 @@
                             console.log(error);
                         });
                 },
+                
                 getClassById (id) {
                     return this.classes.find(product => product.id === id);
                 },
+                
                 removeFromCart: function (productId) {
-                    // TODO: remove class from cart
+                    // remove class from cart
                     // find the position where the class is stored 
                     let index = this.cart.indexOf(productId);
 
@@ -364,21 +285,10 @@
                         this.showProduct = true;
                     }
                 },
+                
                 searchClasses () {
                     // Search filter Functionality
                     // filter cart based on searchTerm
-                    // let searchResults = [];
-                    // for (let product of this.classes) {
-                    //     if (
-                    //         product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                    //         product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                    //         product.price.toString().includes(this.searchTerm.toLowerCase()) ||
-                    //         (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase())
-                    //     ) {
-                    //         searchResults.push(product);
-                    //     }
-                    // }
-                    // return searchResults;
                     
                     // Send searchTerm to server
                     // fetch search results from server
@@ -405,28 +315,14 @@
                     // its value is calculated each time its called
                     return this.cart.length || "";
                 },
-                
-                itemsLeft() {
-                    return this.product.availableInventory - this.cartItemCount;
-                },
-                
+                                
                 cartItems() {
-                    // TODO: show classes added to cart
+                    // show classes added to cart
                     // array without duplicate classes 
                     return [...new Set(this.cart)];
                 },
 
                 sortedClasses() {
-                    
-                    // Search filter Functionality
-                    // TODO: add search with price & availability 
-                    // const filteredClasses = this.classes.filter(product => {
-                    //     return product.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                    //         product.location.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-                    //         product.price.toString().includes(this.searchTerm.toLowerCase()) ||
-                    //         (product.availableInventory - this.cartCount(product.id)).toString().includes(this.searchTerm.toLowerCase());
-                    // });
-
                     // Sort Filter Functionality
                     // compare function that defines the order
                     function compare(a, b) {
@@ -444,12 +340,6 @@
                         return 0;
                     }
 
-                    // Return 'filteredClasses' array with the sorted products
-                    // return filteredClasses.sort(compare.bind(this));
-                    // let searchClasses = this.searchClasses()
-                    // return this.searchClasses().sort(compare.bind(this));
-                    // return filteredClasses.slice().sort(compare.bind(this));
-
                     // if search term is present, return sorted search results
                     if (this.searchTerm) {
                         return this.searchResults.sort(compare.bind(this));
@@ -457,13 +347,11 @@
 
                     // return sorted classes
                     return this.classes.sort(compare.bind(this));
-                    
                 },
 
                 formValid() {
-                    // TODO: check validity of name and phone number
+                    // check validity of name and phone number
                     // check done using regular expression
-
                     let nameTest = /^[a-zA-Z ]{2,30}$/;
                     let phoneTest = /^\d{10}$/;
 
@@ -471,7 +359,6 @@
                         phoneTest.test(this.order.phoneNumber) &&
                         this.order.name &&
                         this.order.phoneNumber;
-
                 }
             }
 
